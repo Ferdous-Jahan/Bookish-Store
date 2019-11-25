@@ -17,13 +17,11 @@ namespace Project_ATP2.Models
         public int Id { get; set; }
         public int Order_Id { get; set; }
         public int Book_Id { get; set; }
-        public Nullable<int> Coupon_Id { get; set; }
         public int QuantityOrdered { get; set; }
         public double Subtotal { get; set; }
         public double ActualPrice { get; set; }
     
         public virtual Book Book { get; set; }
-        public virtual Coupon Coupon { get; set; }
         public virtual Order Order { get; set; }
     }
 }

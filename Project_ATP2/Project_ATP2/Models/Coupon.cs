@@ -17,7 +17,7 @@ namespace Project_ATP2.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Coupon()
         {
-            this.OrderDatas = new HashSet<OrderData>();
+            this.Orders = new HashSet<Order>();
         }
     
         public int Id { get; set; }
@@ -26,6 +26,6 @@ namespace Project_ATP2.Models
         public System.DateTime ExpireDate { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<OrderData> OrderDatas { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

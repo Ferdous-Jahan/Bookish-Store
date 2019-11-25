@@ -89,6 +89,7 @@
     <Property Name="Order_Id" Type="int" Nullable="false" />
     <Property Name="Status" Type="varchar" MaxLength="100" Nullable="false" />
     <Property Name="AddedDate" Type="date" Nullable="false" />
+    <Property Name="TimeTaken" Type="date" />
   </EntityType>
   <EntityType Name="Employees">
     <Key>
@@ -132,7 +133,6 @@
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Order_Id" Type="int" Nullable="false" />
     <Property Name="Book_Id" Type="int" Nullable="false" />
-    <Property Name="Coupon_Id" Type="int" />
     <Property Name="QuantityOrdered" Type="int" Nullable="false" />
     <Property Name="Subtotal" Type="float" Nullable="false" />
     <Property Name="ActualPrice" Type="float" Nullable="false" />
@@ -161,6 +161,7 @@
     <Property Name="DeliveredBy" Type="varchar" MaxLength="50" />
     <Property Name="AddedDate" Type="date" Nullable="false" />
     <Property Name="ModifiedDate" Type="date" />
+    <Property Name="Coupon_Id" Type="int" />
   </EntityType>
   <EntityType Name="Publishers">
     <Key>
@@ -412,18 +413,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_OrderDatas_Coupons">
-    <End Role="Coupons" Type="Self.Coupons" Multiplicity="0..1" />
-    <End Role="OrderDatas" Type="Self.OrderDatas" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Coupons">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="OrderDatas">
-        <PropertyRef Name="Coupon_Id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="FK_OrderDatas_Orders">
     <End Role="Orders" Type="Self.Orders" Multiplicity="1" />
     <End Role="OrderDatas" Type="Self.OrderDatas" Multiplicity="*" />
@@ -445,6 +434,18 @@
       </Principal>
       <Dependent Role="OrderLogs">
         <PropertyRef Name="Order_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Orders_Coupons">
+    <End Role="Coupons" Type="Self.Coupons" Multiplicity="0..1" />
+    <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Coupons">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Orders">
+        <PropertyRef Name="Coupon_Id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -607,10 +608,6 @@
       <End Role="Books" EntitySet="Books" />
       <End Role="OrderDatas" EntitySet="OrderDatas" />
     </AssociationSet>
-    <AssociationSet Name="FK_OrderDatas_Coupons" Association="Self.FK_OrderDatas_Coupons">
-      <End Role="Coupons" EntitySet="Coupons" />
-      <End Role="OrderDatas" EntitySet="OrderDatas" />
-    </AssociationSet>
     <AssociationSet Name="FK_OrderDatas_Orders" Association="Self.FK_OrderDatas_Orders">
       <End Role="Orders" EntitySet="Orders" />
       <End Role="OrderDatas" EntitySet="OrderDatas" />
@@ -618,6 +615,10 @@
     <AssociationSet Name="FK_OrderLogs_Orders" Association="Self.FK_OrderLogs_Orders">
       <End Role="Orders" EntitySet="Orders" />
       <End Role="OrderLogs" EntitySet="OrderLogs" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Orders_Coupons" Association="Self.FK_Orders_Coupons">
+      <End Role="Coupons" EntitySet="Coupons" />
+      <End Role="Orders" EntitySet="Orders" />
     </AssociationSet>
     <AssociationSet Name="FK_Orders_Users" Association="Self.FK_Orders_Users">
       <End Role="Users" EntitySet="Users" />

@@ -1,8 +1,10 @@
 ﻿using Project_ATP2.Interfaces;
 using Project_ATP2.Models;
+using Project_ATP2.Models.Custom;
 using Project_ATP2.Repositories;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -13,7 +15,7 @@ namespace Project_ATP2.Controllers
     public class AccountController : Controller
     {
         LoginRepository repoLogin = new LoginRepository(new ProjectDBEntities());
-
+        UserRepositoryJahan repoUser = new UserRepositoryJahan(new ProjectDBEntities());
         
         public ActionResult Login()
         {
@@ -75,7 +77,59 @@ namespace Project_ATP2.Controllers
             return RedirectToAction("Login");
         }
 
+        [HttpGet]
+        public ActionResult SignUp()
+        {
+            return View(new SignUpUser());
+        }
 
+        [HttpPost]
+        public ActionResult SignUp(SignUpUser su, HttpPostedFileBase Image)
+        {
+            string filenameUser;
+
+            if (Image != null)
+            {
+                string filename = Path.GetFileNameWithoutExtension(Image.FileName);
+                string extnss = Path.GetExtension(Image.FileName);
+                filename = filename + DateTime.Now.ToString("yymmddfff") + extnss;
+                filenameUser = filename;
+                filename = Path.Combine(Server.MapPath("~/Images/ProfilePicture/"), filename);
+                Image.SaveAs(filename);
+            }
+            else
+            {
+                filenameUser = "default.jpg";
+            }
+            User u = new User();
+            u.Name = su.Name;
+            u.Email = su.Email;
+            u.Address = su.Address;
+            u.DOB = su.DOB.ToString();
+            u.PhoneNumber = su.PhoneNumber.ToString();
+            u.Role_Id = 1;
+            u.Image = filenameUser;
+            u.AddedDate = DateTime.Now;
+            u.ModifiedDate = DateTime.Now;
+            repoUser.Insert(u);
+            repoUser.SaveChanges();
+
+            Login l = new Login();
+            l.Email = su.Email;
+            l.Pass = su.Password;
+            l.Role_Id = 1;
+            l.Status = "APPROVED";
+            u = repoUser.GetByEmail(su.Email);
+            if (u != null)
+                l.User_Id = u.Id;
+
+            repoLogin.Insert(l);
+            repoLogin.SaveChanges();
+
+            Session["UserEmail"] = su.Email;
+            //return Content(su.Password);
+            return RedirectToAction("Index", "Home");
+        }
 
 
         //    // GET: Account/Details/5

@@ -78,7 +78,7 @@
     <Property Name="CouponKeyword" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="Percentage" Type="Int32" Nullable="false" />
     <Property Name="ExpireDate" Type="DateTime" Nullable="false" Precision="0" />
-    <NavigationProperty Name="OrderDatas" Relationship="Self.FK_OrderDatas_Coupons" FromRole="Coupons" ToRole="OrderDatas" />
+    <NavigationProperty Name="Orders" Relationship="Self.FK_Orders_Coupons" FromRole="Coupons" ToRole="Orders" />
   </EntityType>
   <EntityType Name="Customer">
     <Key>
@@ -108,6 +108,7 @@
     <Property Name="Order_Id" Type="Int32" Nullable="false" />
     <Property Name="Status" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="AddedDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="TimeTaken" Type="DateTime" Precision="0" />
     <NavigationProperty Name="DeliveryMan" Relationship="Self.FK_DeliveryTasks_DeliveryMans" FromRole="DeliveryTasks" ToRole="DeliveryMans" />
     <NavigationProperty Name="Order" Relationship="Self.FK_DeliveryTasks_Orders" FromRole="DeliveryTasks" ToRole="Orders" />
   </EntityType>
@@ -158,12 +159,10 @@
     <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="Order_Id" Type="Int32" Nullable="false" />
     <Property Name="Book_Id" Type="Int32" Nullable="false" />
-    <Property Name="Coupon_Id" Type="Int32" />
     <Property Name="QuantityOrdered" Type="Int32" Nullable="false" />
     <Property Name="Subtotal" Type="Double" Nullable="false" />
     <Property Name="ActualPrice" Type="Double" Nullable="false" />
     <NavigationProperty Name="Book" Relationship="Self.FK_OrderDatas_Books" FromRole="OrderDatas" ToRole="Books" />
-    <NavigationProperty Name="Coupon" Relationship="Self.FK_OrderDatas_Coupons" FromRole="OrderDatas" ToRole="Coupons" />
     <NavigationProperty Name="Order" Relationship="Self.FK_OrderDatas_Orders" FromRole="OrderDatas" ToRole="Orders" />
   </EntityType>
   <EntityType Name="OrderLog">
@@ -191,6 +190,8 @@
     <Property Name="DeliveredBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="AddedDate" Type="DateTime" Nullable="false" Precision="0" />
     <Property Name="ModifiedDate" Type="DateTime" Precision="0" />
+    <Property Name="Coupon_Id" Type="Int32" />
+    <NavigationProperty Name="Coupon" Relationship="Self.FK_Orders_Coupons" FromRole="Orders" ToRole="Coupons" />
     <NavigationProperty Name="DeliveryTasks" Relationship="Self.FK_DeliveryTasks_Orders" FromRole="Orders" ToRole="DeliveryTasks" />
     <NavigationProperty Name="OrderDatas" Relationship="Self.FK_OrderDatas_Orders" FromRole="Orders" ToRole="OrderDatas" />
     <NavigationProperty Name="OrderLogs" Relationship="Self.FK_OrderLogs_Orders" FromRole="Orders" ToRole="OrderLogs" />
@@ -402,14 +403,14 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_OrderDatas_Coupons">
+  <Association Name="FK_Orders_Coupons">
     <End Role="Coupons" Type="Self.Coupon" Multiplicity="0..1" />
-    <End Role="OrderDatas" Type="Self.OrderData" Multiplicity="*" />
+    <End Role="Orders" Type="Self.Order" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Coupons">
         <PropertyRef Name="Id" />
       </Principal>
-      <Dependent Role="OrderDatas">
+      <Dependent Role="Orders">
         <PropertyRef Name="Coupon_Id" />
       </Dependent>
     </ReferentialConstraint>
@@ -637,9 +638,9 @@
       <End Role="Users" EntitySet="Users" />
       <End Role="Carts" EntitySet="Carts" />
     </AssociationSet>
-    <AssociationSet Name="FK_OrderDatas_Coupons" Association="Self.FK_OrderDatas_Coupons">
+    <AssociationSet Name="FK_Orders_Coupons" Association="Self.FK_Orders_Coupons">
       <End Role="Coupons" EntitySet="Coupons" />
-      <End Role="OrderDatas" EntitySet="OrderDatas" />
+      <End Role="Orders" EntitySet="Orders" />
     </AssociationSet>
     <AssociationSet Name="FK_Customer_Users" Association="Self.FK_Customer_Users">
       <End Role="Users" EntitySet="Users" />

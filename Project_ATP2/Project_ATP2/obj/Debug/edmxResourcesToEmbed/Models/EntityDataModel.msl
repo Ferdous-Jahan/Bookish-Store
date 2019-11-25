@@ -97,6 +97,7 @@
           <ScalarProperty Name="Order_Id" ColumnName="Order_Id" />
           <ScalarProperty Name="Status" ColumnName="Status" />
           <ScalarProperty Name="AddedDate" ColumnName="AddedDate" />
+          <ScalarProperty Name="TimeTaken" ColumnName="TimeTaken" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -145,7 +146,6 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Order_Id" ColumnName="Order_Id" />
           <ScalarProperty Name="Book_Id" ColumnName="Book_Id" />
-          <ScalarProperty Name="Coupon_Id" ColumnName="Coupon_Id" />
           <ScalarProperty Name="QuantityOrdered" ColumnName="QuantityOrdered" />
           <ScalarProperty Name="Subtotal" ColumnName="Subtotal" />
           <ScalarProperty Name="ActualPrice" ColumnName="ActualPrice" />
@@ -176,6 +176,7 @@
           <ScalarProperty Name="DeliveredBy" ColumnName="DeliveredBy" />
           <ScalarProperty Name="AddedDate" ColumnName="AddedDate" />
           <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+          <ScalarProperty Name="Coupon_Id" ColumnName="Coupon_Id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

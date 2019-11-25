@@ -44,5 +44,10 @@ namespace Project_ATP2.Repositories
         {
             Context.Set<TEntity>().RemoveRange(entities);
         }
+
+        public void SaveChanges()
+        {
+            Context.SaveChanges();
+        }
     }
 }

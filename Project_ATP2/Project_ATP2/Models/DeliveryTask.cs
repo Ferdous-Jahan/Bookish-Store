@@ -19,6 +19,7 @@ namespace Project_ATP2.Models
         public int Order_Id { get; set; }
         public string Status { get; set; }
         public System.DateTime AddedDate { get; set; }
+        public Nullable<System.DateTime> TimeTaken { get; set; }
     
         public virtual DeliveryMan DeliveryMan { get; set; }
         public virtual Order Order { get; set; }
