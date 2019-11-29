@@ -1,8 +1,9 @@
-﻿using Project_ATP2.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Project_ATP2.Models;
+using Project_ATP2.Models.CustomModel;
 
 namespace Project_ATP2.Repositories
 {
@@ -19,17 +20,18 @@ namespace Project_ATP2.Repositories
         }
 
 
+        
+
         public User GetByEmail(string email)
         {
-            IEnumerable<User> uList = new List<User>();
+            IEnumerable<User> uList;
             uList = GetAll();
-            foreach(User u in uList)
+            foreach (User u in uList)
             {
                 if (u.Email == email)
                     return u;
             }
             return null;
         }
-
     }
 }

@@ -1,136 +1,165 @@
-﻿@model IEnumerable<Project_ATP2.Models.Book>
+﻿@model  Project_ATP2.Models.CustomModel.CustomRakibBook
 
 @{
     ViewBag.Title = "Index";
     Layout = "/Views/Shared/_HomeCustomerLayout.cshtml";
 }
-<script src="/JS/AdsIndex.js"></script>
+@*<script src="/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>*@
 
-<h2>Index</h2>
+<script src="/JS/paginator.js"></script>
+
+<div class="col-md-12" style="height:200px;">
+
+</div>
 
 
-<div class="row">
+<div class="col-md-3" style="background-color:slategrey; height:900px; color:white">
     <div class="container">
-        <div class="form-inline">
-            <div class="col-md-3">
-                City:
+        <div class="">
+            <div class="">
+                <h5>Filter</h5>
+                <div class="row">
+                    <div class="">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search for..." id="SearchStr" name="SearchStr" value="">
+                            <span class="input-group-btn">
+                                <button onclick="loadAllBooks(this.value, this)" class="btn btn-default" type="button" id="Search" name="Search">Go!</button>
+                            </span>
+
+                        </div><!-- /input-group -->
+                    </div><!-- /.col-lg-6 -->
+
+                </div><!-- /.row -->
                 <hr />
-                <select id="City" onchange="loadArea(this.value, this)" placeholder="select" name="City" class="form-control" required>
-                    <option value="">--Please select City--</option>
-                    <option>Dhaka</option>
-                    <option>Chittagong</option>
-                    <option>Khulna</option>
-                    <option>Rajshahi</option>
+                <div class="container">
+                    <fieldset style="float:left;" class="">
+                        Sort results by:
+                        <hr>
+                        <select name="Order-By" id='Order-By' onchange="loadAllBooks(this.value, this)" class="form-control">
+                            <option value="">--Order By--</option>
+                            <option>Price: Hight to low</option>
+                            <option>Price: Low to high</option>
+                        </select>
+                    </fieldset>
+                </div>
+                <hr />
+                <p>Language:</p>
+                <select id="Language" placeholder="select" name="Language" class="form-control" onchange="loadAllBooks(this.value, this)">
+                    <option value="">--Select Language--</option>
+                    <option>English</option>
+                    <option>Bangla</option>
+                    <option>Arabic</option>
                 </select>
             </div>
         </div>
 
-        <div class="form-inline">
-            <div class="col-md-3">
-                Area:
+        <div class="">
+            <div class="">
                 <hr />
-                <select id="Area" name="Area" onchange="loadAllBooks(this.value, this)" class="form-control" required>
-                    <option value="">--Please select Area--</option>
+                <p>Publisher</p>
+                <select id="Publisher" placeholder="select" name="Publisher" class="form-control" onchange="loadAllBooks(this.value, this)">
+                    <option value="">--Select Publisher--</option>
+                    @foreach (var item in Model.PublisherList)
+                    {
+                        <option> @item.Name </option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="">
+            <div class="">
+                <hr />
+                <p>Author</p>
+                <select id="Author" placeholder="select" name="Author" class="form-control" onchange="loadAllBooks(this.value, this)">
+                    <option value="">--Select Author--</option>
+                    @foreach (var item in Model.AuthorList)
+                    {
+                        <option> @item.Name </option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="">
+            <div class="">
+                <hr />
+                <p>Category</p>
+                <select id="Category" placeholder="select" name="Category" class="form-control" onchange="loadAllBooks(this.value, this)">
+                    <option value="">--Select Author--</option>
+                    @foreach (var item in Model.CategoryList)
+                    {
+                        <option> @item.Name </option>
+                    }
                 </select>
             </div>
         </div>
     </div>
 </div>
-<hr />
 
 
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Summary)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Title)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ISBN)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Edition)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.NumberOfPage)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Country)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Language)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Price)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.DiscountRate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Image)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Author.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Category.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Publisher.Name)
-        </th>
-        <th></th>
-    </tr>
+<div class="col-md-9" style="background-color:aliceblue" id="">
 
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Summary)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ISBN)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Edition)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumberOfPage)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Country)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Language)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DiscountRate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Image)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Author.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Publisher.Name)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-            </td>
-        </tr>
-    }
+    <div id="AdsGrid_Window">
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>
+                    @Html.DisplayName("Title")
+                </th>
+                <th>
+                    @Html.DisplayName("Edition")
+                </th>
+                <th>
+                    @Html.DisplayName("Language")
+                </th>
+                <th>
+                    @Html.DisplayName("Price")
+                </th>
+                <th>
+                    @Html.DisplayName("Image")
+                </th>
+                <th>Options</th>
+            </tr>
+            <tbody id="AdsDiv" class="table table-bordered">
 
-</table>
+            </tbody>
+        </table>
+        
+
+        <div class="nav-btn-container" id="pageNav">
+        </div>
+    </div>
+
+
+</div>
+<input type="hidden" value="@ViewBag.User_Id" id="User_Id"/>
+
+
+
+<script type="text/javascript">
+  window.onload = function() {
+   loadAllBooks('', '');
+  }
+</script>
+
+
+@*<script>
+        $(document).ready(function () {
+            var city = $("#City").val();
+            var area = $("#Area").val();
+            $("#City").click(function () {
+                $("#AdsGrid_Window").load("/Home/GetView"),
+                { city: City, area: Area }
+            });
+        });
+    </script>*@
+
+
+
+
+
+
+
+
+

@@ -16,5 +16,9 @@ namespace Project_ATP2.Interfaces
 
         void Delete(TEntity entity);
         void RemoveRange(IEnumerable<TEntity> entities);
+        void Modify(TEntity entity);
+
+        void Save();
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Project_ATP2.Interfaces;
 using Project_ATP2.Models;
-using Project_ATP2.Models.Custom;
+using Project_ATP2.Models.CustomModel;
 using Project_ATP2.Repositories;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace Project_ATP2.Controllers
     {
         LoginRepository repoLogin = new LoginRepository(new ProjectDBEntities());
         UserRepositoryJahan repoUser = new UserRepositoryJahan(new ProjectDBEntities());
-        
+
         public ActionResult Login()
         {
             return View();
@@ -25,8 +25,10 @@ namespace Project_ATP2.Controllers
         [HttpPost]
         public ActionResult Login(string Email, string Password)
         {
-            bool isValid = repoLogin.VarifyLogin(Email, Password);
-            if (isValid)
+            bool isValidData = repoLogin.VarifyLogin(Email, Password);
+            bool isValidStatus = repoLogin.EContext.Logins.Any(m=>m.Email == Email && m.Pass == Password && m.Status != "Block");
+
+            if (isValidData && isValidStatus)
             {
                 FormsAuthentication.SetAuthCookie(Email, false);
                 string userId = repoLogin.GetUserId(Email);
@@ -61,12 +63,21 @@ namespace Project_ATP2.Controllers
                     ModelState.AddModelError("", "Something went wrong! Please try again");
                     return View();
                 }
-                
 
                 
+
+            }
+            if (!isValidData && !isValidStatus)
+            {
+                ModelState.AddModelError("", "You account has been blocked");
+
+            }
+            else
+            {
+                ModelState.AddModelError("", "Email and Password is incorrect");
             }
 
-            ModelState.AddModelError("", "Email and Password is incorrect");
+            
             return View();
         }
 
@@ -86,122 +97,96 @@ namespace Project_ATP2.Controllers
         [HttpPost]
         public ActionResult SignUp(SignUpUser su, HttpPostedFileBase Image)
         {
-            string filenameUser;
+            bool isValidEmail = repoLogin.GetAll().Any(m => m.Email == su.Email);
 
-            if (Image != null)
+            if (isValidEmail)
             {
-                string filename = Path.GetFileNameWithoutExtension(Image.FileName);
-                string extnss = Path.GetExtension(Image.FileName);
-                filename = filename + DateTime.Now.ToString("yymmddfff") + extnss;
-                filenameUser = filename;
-                filename = Path.Combine(Server.MapPath("~/Images/ProfilePicture/"), filename);
-                Image.SaveAs(filename);
+                ModelState.AddModelError("", "Email account already exists");
+                return View(su);
             }
-            else
-            {
-                filenameUser = "default.jpg";
-            }
-            User u = new User();
-            u.Name = su.Name;
-            u.Email = su.Email;
-            u.Address = su.Address;
-            u.DOB = su.DOB.ToString();
-            u.PhoneNumber = su.PhoneNumber.ToString();
-            u.Role_Id = 1;
-            u.Image = filenameUser;
-            u.AddedDate = DateTime.Now;
-            u.ModifiedDate = DateTime.Now;
-            repoUser.Insert(u);
-            repoUser.SaveChanges();
 
-            Login l = new Login();
-            l.Email = su.Email;
-            l.Pass = su.Password;
-            l.Role_Id = 1;
-            l.Status = "APPROVED";
-            u = repoUser.GetByEmail(su.Email);
-            if (u != null)
+            if (ModelState.IsValid)
+            {
+                string filenameUser;
+
+                if (Image != null)
+                {
+                    string filename = Path.GetFileNameWithoutExtension(Image.FileName);
+                    string extnss = Path.GetExtension(Image.FileName);
+                    filename = filename + DateTime.Now.ToString("yymmddfff") + extnss;
+                    filenameUser = filename;
+                    filename = Path.Combine(Server.MapPath("~/Images/ProfilePicture/"), filename);
+                    Image.SaveAs(filename);
+                }
+                else
+                {
+                    filenameUser = "default.jpg";
+                }
+                User u = new User();
+                u.Name = su.Name;
+                u.Email = su.Email;
+                u.Address = su.Address;
+                u.DOB = su.DOB.ToString();
+                u.PhoneNumber = su.PhoneNumber.ToString();
+                u.Role_Id = 1;
+                u.Image = filenameUser;
+                u.AddedDate = DateTime.Now;
+                u.ModifiedDate = DateTime.Now;
+                repoUser.Insert(u);
+                repoUser.EContext.SaveChanges();
+
+                Login l = new Login();
+                l.Email = su.Email;
+                l.Pass = su.Password;
+                l.Role_Id = 1;
+                l.Status = "APPROVED";
+                u = repoUser.GetByEmail(su.Email);
+                if (u != null)
                 l.User_Id = u.Id;
 
-            repoLogin.Insert(l);
-            repoLogin.SaveChanges();
+                repoLogin.Insert(l);
+                repoLogin.SaveChanges();
 
-            Session["UserEmail"] = su.Email;
-            //return Content(su.Password);
-            return RedirectToAction("Index", "Home");
+                //Add Customer
+                Customer c = new Customer();
+                c.User_Id = u.Id;
+                c.Area = su.Area;
+                repoLogin.EContext.Customers.Add(c);
+                repoLogin.SaveChanges();
+
+                Session["UserEmail"] = su.Email;
+                //return Content(su.Password);  
+
+                return RedirectToAction("Index", "Home");
+            }
+            ModelState.AddModelError("", "Something went wrong! Please try again");
+            return View(su);
+
+        }
+
+        public ActionResult AccountDetails()
+        {
+            return View(repoUser.GetByEmail(User.Identity.Name));
+        }
+
+        [HttpGet]
+        public ActionResult EditAccount()
+        {
+
+            return View(repoUser.GetByEmail(User.Identity.Name));
         }
 
 
-        //    // GET: Account/Details/5
-        //    public ActionResult Details(int id)
-        //    {
-        //        return View();
-        //    }
-
-        //    // GET: Account/Create
-        //    public ActionResult Create()
-        //    {
-        //        return View();
-        //    }
-
-        //    // POST: Account/Create
-        //    [HttpPost]
-        //    public ActionResult Create(FormCollection collection)
-        //    {
-        //        try
-        //        {
-        //            // TODO: Add insert logic here
-
-        //            return RedirectToAction("Index");
-        //        }
-        //        catch
-        //        {
-        //            return View();
-        //        }
-        //    }
-
-        //    // GET: Account/Edit/5
-        //    public ActionResult Edit(int id)
-        //    {
-        //        return View();
-        //    }
-
-        //    // POST: Account/Edit/5
-        //    [HttpPost]
-        //    public ActionResult Edit(int id, FormCollection collection)
-        //    {
-        //        try
-        //        {
-        //            // TODO: Add update logic here
-
-        //            return RedirectToAction("Index");
-        //        }
-        //        catch
-        //        {
-        //            return View();
-        //        }
-        //    }
-
-        //    // GET: Account/Delete/5
-        //    public ActionResult Delete(int id)
-        //    {
-        //        return View();
-        //    }
-
-        //    // POST: Account/Delete/5
-        //    [HttpPost]
-        //    public ActionResult Delete(int id, FormCollection collection)
-        //    {
-        //        try
-        //        {
-        //            // TODO: Add delete logic here
-
-        //            return RedirectToAction("Index");
-        //        }
-        //        catch
-        //        {
-        //            return View();
-        //        }
-        //    }
+        [HttpPost]
+        public ActionResult EditAccount(int id,User u)
+        {
+            var x = repoUser.GetById(id);
+            x.Name = u.Name;
+            x.PhoneNumber = u.PhoneNumber;
+            //x.DOB = u.DOB;
+            x.Address = u.Address;
+            repoUser.SaveChanges();
+            return RedirectToAction("AccountDetails");
+        }
     }
 }

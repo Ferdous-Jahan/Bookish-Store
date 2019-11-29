@@ -114,7 +114,18 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Image\ProfilePicture\default.jpg" />
+    <Content Include="Image\ProfilePicture\gra02190623633.PNG" />
+    <Content Include="Image\ProfilePicture\gra02195823278.PNG" />
+    <Content Include="Image\ProfilePicture\Screenshot %284%29195323140.png" />
+    <Content Include="Image\ProfilePicture\Screenshot %287%29192425314.png" />
+    <Content Include="JS\AdsDetails.js" />
     <Content Include="JS\AdsIndex.js" />
+    <Content Include="JS\ajax.js" />
+    <Content Include="JS\CartJS.js" />
+    <Content Include="JS\CustomerManagement.js" />
+    <Content Include="JS\OrderJS.js" />
+    <Content Include="JS\paginator.js" />
     <Content Include="JS\PostCreate.js" />
     <Content Include="JS\RegistrationValidation.js" />
     <Content Include="Json\chittagong.json" />
@@ -125,6 +136,7 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>EntityDataModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <Content Include="JS\Validation.js" />
     <Content Include="Models\EntityDataModel.edmx.diagram">
       <DependentUpon>EntityDataModel.edmx</DependentUpon>
     </Content>
@@ -157,6 +169,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminAccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\DeliveryManController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SalesmanController.cs" />
@@ -164,10 +177,14 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helper\PagedData.cs" />
+    <Compile Include="Helper\Paginator.cs" />
+    <Compile Include="Helper\ShoppingCart.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Models\Author.cs">
       <DependentUpon>EntityDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\AvailableArea.cs" />
     <Compile Include="Models\Book.cs">
       <DependentUpon>EntityDataModel.tt</DependentUpon>
     </Compile>
@@ -186,7 +203,13 @@
     <Compile Include="Models\Customer.cs">
       <DependentUpon>EntityDataModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Custom\SignUpUser.cs" />
+    <Compile Include="Models\CustomModel\CustomRakibBook.cs" />
+    <Compile Include="Models\CustomModel\CustomRakibDetail.cs" />
+    <Compile Include="Models\CustomModel\CustomRakibModel.cs" />
+    <Compile Include="Models\CustomModel\EmployeeDetails.cs" />
+    <Compile Include="Models\CustomModel\RAdminDashboard.cs" />
+    <Compile Include="Models\CustomModel\SignUpEmployee.cs" />
+    <Compile Include="Models\CustomModel\SignUpUser.cs" />
     <Compile Include="Models\DeliveryMan.cs">
       <DependentUpon>EntityDataModel.tt</DependentUpon>
     </Compile>
@@ -248,9 +271,30 @@
       <DependentUpon>EntityDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\DeliverymanRepository.cs" />
+    <Compile Include="Repositories\DeliveryTaskRepository.cs" />
+    <Compile Include="Repositories\JahanOrderRepository.cs" />
+    <Compile Include="Repositories\JahanRepositoryEmployeeDetails.cs" />
     <Compile Include="Repositories\LoginRepository.cs" />
+    <Compile Include="Repositories\OrderDataRepository.cs" />
+    <Compile Include="Repositories\OrderLogsRepository.cs" />
+    <Compile Include="Repositories\OrderRepository.cs" />
+    <Compile Include="Repositories\RakibOrderLogRepository.cs" />
+    <Compile Include="Repositories\RakibAuthorRepository.cs" />
     <Compile Include="Repositories\RakibBookRepository.cs" />
+    <Compile Include="Repositories\RakibCartRepository.cs" />
+    <Compile Include="Repositories\RakibCategoryRepository.cs" />
+    <Compile Include="Repositories\RakibCouponRepository.cs" />
+    <Compile Include="Repositories\RakibOrderDataRepository.cs" />
+    <Compile Include="Repositories\RakibOrderRepository.cs" />
+    <Compile Include="Repositories\RakibPublisherRepository.cs" />
+    <Compile Include="Repositories\RakibRakingRepository.cs" />
+    <Compile Include="Repositories\RakibReportRepository.cs" />
+    <Compile Include="Repositories\RakibStockRepository.cs" />
+    <Compile Include="Repositories\RakibUserRepository.cs" />
     <Compile Include="Repositories\Repository.cs" />
+    <Compile Include="Repositories\StocksRepository.cs" />
+    <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Repositories\UserRepositoryJahan.cs" />
     <Compile Include="WebRoleProvider.cs" />
   </ItemGroup>
@@ -262,15 +306,37 @@
     <Content Include="Views\Shared\_HomeCustomerLayout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\_SalesmanLayout.cshtml" />
-    <Content Include="Views\Salesman\Index.cshtml" />
     <Content Include="Views\Shared\_ShippingManagerLayout.cshtml" />
-    <Content Include="Views\ShippingManager\Index.cshtml" />
     <Content Include="Views\Shared\_DeliveryManLayout.cshtml" />
-    <Content Include="Views\DeliveryMan\Index.cshtml" />
     <Content Include="Views\Shared\_ManagerLayout.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
-    <Content Include="Views\AdminAccounts\Index.cshtml" />
+    <Content Include="Views\Shared\_AdsGrid.cshtml" />
+    <Content Include="Views\Home\Details.cshtml" />
+    <Content Include="Views\Cart\Index.cshtml" />
+    <Content Include="Views\Shared\_PartialCartGrid.cshtml" />
+    <Content Include="Views\Cart\Order.cshtml" />
+    <Content Include="Views\Cart\OrderS.cshtml" />
+    <Content Include="Views\Home\MyOrder.cshtml" />
     <Content Include="Views\Account\SignUp.cshtml" />
+    <Content Include="Views\AdminAccount\Index.cshtml" />
+    <Content Include="Views\AdminAccount\EmployeeDetails.cshtml" />
+    <Content Include="Views\AdminAccount\AddEmployee.cshtml" />
+    <Content Include="Views\AdminAccount\CustomerManagement.cshtml" />
+    <Content Include="Views\AdminAccount\CustomerManagementSearch.cshtml" />
+    <Content Include="Views\Account\AccountDetails.cshtml" />
+    <Content Include="Views\Account\EditAccount.cshtml" />
+    <Content Include="Views\Admin\Books.cshtml" />
+    <Content Include="Views\Admin\CreateAuthor.cshtml" />
+    <Content Include="Views\Admin\CreateCategory.cshtml" />
+    <Content Include="Views\Admin\CreateBook.cshtml" />
+    <Content Include="Views\Salesman\Dashboard.cshtml" />
+    <Content Include="Views\Salesman\Index.cshtml" />
+    <Content Include="Views\DeliveryMan\Dashboard.cshtml" />
+    <Content Include="Views\DeliveryMan\Index.cshtml" />
+    <Content Include="Views\DeliveryMan\OrderBookList.cshtml" />
+    <Content Include="Views\ShippingManager\Dashboard.cshtml" />
+    <Content Include="Views\ShippingManager\Index.cshtml" />
+    <Content Include="Views\Admin\Details.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -280,7 +346,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Images\ProfilePicture\" />
+    <Folder Include="Image\AuthorPicture\" />
+    <Folder Include="Views\AdminAccounts\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

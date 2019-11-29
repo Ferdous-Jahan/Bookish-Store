@@ -22,7 +22,7 @@ namespace Project_ATP2.Repositories
         }
         public IEnumerable<TEntity> GetAll()
         {
-            return Context.Set<TEntity>().ToList();
+            return Context.Set<TEntity>().ToList<TEntity>();
         }
 
         public TEntity GetById(int id)
@@ -48,6 +48,15 @@ namespace Project_ATP2.Repositories
         public void SaveChanges()
         {
             Context.SaveChanges();
+        }
+        public void Save()
+        {
+            this.Context.SaveChanges();
+        }
+
+        public void Modify(TEntity entity)
+        {
+            throw new NotImplementedException();
         }
     }
 }

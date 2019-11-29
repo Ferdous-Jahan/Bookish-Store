@@ -1,97 +1,201 @@
-﻿using Project_ATP2.Interfaces;
-using Project_ATP2.Models;
+﻿using Project_ATP2.Models;
 using Project_ATP2.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Project_ATP2.Models.CustomModel;
+using Newtonsoft.Json;
+using Project_ATP2.Helper;
 
 namespace Project_ATP2.Controllers
 {
     public class HomeController : Controller
     {
         RakibBookRepository repoRakibBook = new RakibBookRepository(new ProjectDBEntities());
-        
-        //this is how to add multiple role addess to forms[Authorize(Roles = "Manager,DeliveryMan")]
-        //In the following only person logged in as customer have access
-        //[Authorize(Roles = "Customer")]
+        RakibAuthorRepository repoRakibAuthor = new RakibAuthorRepository(new ProjectDBEntities());
+        RakibCategoryRepository repoRakibCategory = new RakibCategoryRepository(new ProjectDBEntities());
+        RakibPublisherRepository repoRakibPublisher = new RakibPublisherRepository(new ProjectDBEntities());
+        RakibReportRepository repoRakibReport = new RakibReportRepository(new ProjectDBEntities());
+        RakibRakingRepository repoRakibRating = new RakibRakingRepository(new ProjectDBEntities());
+        RakibUserRepository repoRakibUser = new RakibUserRepository(new ProjectDBEntities());
+        RakibCartRepository repoRakibCart = new RakibCartRepository(new ProjectDBEntities());
+        RakibOrderRepository repoRakibOrder = new RakibOrderRepository(new ProjectDBEntities());
+
+        // GET: Home
         public ActionResult Index()
         {
-            var data = repoRakibBook.GetAll();
-            return View(data);
+            CustomRakibBook CRB = new CustomRakibBook(repoRakibAuthor.GetAll(), repoRakibPublisher.GetAll(), repoRakibCategory.GetAll(), repoRakibBook.GetAll());
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = repoRakibUser.GetUserId(User.Identity.Name);
+                ViewBag.User_Id = user.Id;
+            }
+
+            return View(CRB);
         }
 
-        // GET: Home/Details/5
+        public JsonResult GetBooks(string searchStr, string orderBy, string category, string author, string language, string publisher)
+        {
+
+            if (orderBy == "Price: Hight to low")
+            {
+                var result = repoRakibBook.GetSearchBooksPriceHighToLow(publisher, language, category, author, searchStr);
+                var res = result.Select(m => new
+                {
+                    m.Id,
+                    m.Price,
+                    m.Title,
+                    m.Image,
+                    m.Publisher.Name,
+                    m.Publisher_Id,
+                    m.Category_Id,
+                    m.Author_Id,
+                    m.Country,
+                    m.Language,
+                    m.Edition
+                });
+                var json = JsonConvert.SerializeObject(res);
+                return Json(json, JsonRequestBehavior.AllowGet);
+
+            }
+            else if (orderBy == "Price: Low to high")
+            {
+                var result = repoRakibBook.GetSearchBooksPriceLowToHigh(publisher, language, category, author, searchStr);
+                var res = result.Select(m => new
+                {
+                    m.Id,
+                    m.Price,
+                    m.Title,
+                    m.Image,
+                    m.Publisher.Name,
+                    m.Publisher_Id,
+                    m.Category_Id,
+                    m.Author_Id,
+                    m.Country,
+                    m.Language,
+                    m.Edition
+                });
+                var json = JsonConvert.SerializeObject(res);
+                return Json(json, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                var result = repoRakibBook.GetSearchBooks(publisher, language, category, author, searchStr);
+                var res = result.Select(m => new
+                {
+                    m.Id,
+                    m.Price,
+                    m.Title,
+                    m.Image,
+                    m.Publisher.Name,
+                    m.Publisher_Id,
+                    m.Category_Id,
+                    m.Author_Id,
+                    m.Country,
+                    m.Language,
+                    m.Edition
+                });
+                var json = JsonConvert.SerializeObject(res);
+                return Json(json, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         public ActionResult Details(int id)
         {
-            return View();
+            var book = repoRakibBook.GetById(id);
+            //var ratings = 
+            //CustomRakibDetail ratings = new CustomRakibDetail();
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = repoRakibUser.GetUserId(User.Identity.Name);
+                var rating = repoRakibRating.EContext.Ratings.FirstOrDefault(m => m.User_Id == user.Id && m.Book_Id == book.Id);
+                if (rating == null)
+                {
+                    ViewBag.Star = "";
+                    ViewBag.Review = "";
+                }
+                else if (rating.Stars > 0)
+                {
+                    ViewBag.Star = rating.Stars;
+                    ViewBag.Review = "";
+                }
+                else if (rating.Review != "")
+                {
+                    ViewBag.Review = rating.Review;
+                    ViewBag.Star = "";
+                }
+                else
+                {
+                    ViewBag.Star = "";
+                    ViewBag.Review = "";
+                }
+                ViewBag.User_Id = user.Id;
+
+            }
+            return View(book);
         }
 
-        // GET: Home/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Home/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public JsonResult AddReport(Report obj)
         {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            repoRakibReport.AddReport(obj);
+            return Json("true", JsonRequestBehavior.AllowGet);
         }
 
-        // GET: Home/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: Home/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public JsonResult AddReview(Rating obj)
         {
-            try
-            {
-                // TODO: Add update logic here
+            //repoRakibReport.AddReport(obj);
+            repoRakibRating.AddRating(obj);
 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            return Json("true", JsonRequestBehavior.AllowGet);
         }
 
-        // GET: Home/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Home/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public JsonResult AddCart(Cart c)
         {
-            try
-            {
-                // TODO: Add delete logic here
+            //if (User.Identity.IsAuthenticated)
+            //{
 
-                return RedirectToAction("Index");
-            }
-            catch
+            //}
+            //else
+            //{
+            //    var shoppingCart = ShoppingCart.Current;
+            //}
+            if (User.Identity.IsAuthenticated)
             {
-                return View();
+                if (c != null)
+                {
+                    repoRakibCart.AddCart(c);
+                }
             }
+
+            return Json("true", JsonRequestBehavior.AllowGet);
         }
+
+        [Authorize(Roles = "Customer")]
+        public ActionResult MyOrder()
+        {
+
+            var user = repoRakibUser.GetUserId(User.Identity.Name);
+            var orderList = repoRakibOrder.GetOrderByUserId(user.Id);
+
+            return View(orderList);
+        }
+
+        
+        [Authorize(Roles = "Customer")]
+        public ActionResult MyOrderDelete(int id)
+        {
+
+            var orde = repoRakibOrder.GetAll().Where(m => m.Id == id).FirstOrDefault() ;
+            orde.Status = "Canceled";            
+                repoRakibOrder.EContext.SaveChanges();
+
+            return RedirectToAction("MyOrder");
+        }
+
     }
 }

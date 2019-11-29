@@ -4,5 +4,15 @@
     Layout = "/Views/Shared/_SalesmanLayout.cshtml";
 }
 
-<h2>Index</h2>
-Welcome to Salesman Page
+
+<h2> Welcome to Salesman Page </h2>
+
+@if (TempData["ex"] as string == "0")
+{
+    <h3 style="color:red">Empty Dashboard</h3>
+}
+else
+{
+    <h3 style="color:red">Avilable order @TempData["ex"] </h3>
+}
+
